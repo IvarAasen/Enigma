@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Chat{% endblock %}
+{% block content %}
+<div class="flex w-full h-screen">
+    <!-- Sidebar -->
+    <div class="w-1/4 bg-gray-800 p-4 overflow-y-auto">
+        <h2 class="text-lg font-semibold mb-4">Users</h2>
+        <ul>
+            {% for user in users %}
+            <li class="mb-2">
+                <a href="{{ url_for('routes.chat', user=user.id) }}" class="text-blue-400 hover:underline">
+                    {{ user.username }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{{ url_for('auth.logout') }}" class="text-sm text-red-400 hover:underline mt-8 block">Logout</a>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="w-3/4 flex flex-col bg-gray-900 p-6">
+        {% if selected_user %}
+        <div class="mb-4">
+            <h3 class="text-xl font-bold">Chat with {{ selected_user.username }}</h3>
+        </div>
+        <div class="flex-1 overflow-y-auto space-y-2 mb-4">
+            {% for msg in messages %}
+                <div class="{% if msg.sender_id == current_user.id %}text-right{% endif %}">
+                    <div class="inline-block bg-gray-700 px-4 py-2 rounded-lg">
+                        <span>{{ msg.content }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <form method="POST" action="{{ url_for('routes.send_message') }}" class="flex">
+            <input type="hidden" name="recipient_id" value="{{ selected_user.id }}">
+            <input name="content" type="text" placeholder="Type a message..." class="flex-1 bg-gray-800 text-white p-2 rounded-l focus:outline-none focus:ring" required>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r">Send</button>
+        </form>
+        {% else %}
+        <p class="text-gray-400 text-center m-auto">Select a user to start chatting.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
