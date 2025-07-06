@@ -32,10 +32,11 @@
                 </div>
             {% endfor %}
         </div>
-        <form method="POST" action="{{ url_for('routes.send_message') }}" class="flex">
-            <input type="hidden" name="recipient_id" value="{{ selected_user.id }}">
-            <input name="content" type="text" placeholder="Type a message..." class="flex-1 bg-gray-800 text-white p-2 rounded-l focus:outline-none focus:ring" required>
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r">Send</button>
+        <form method="POST" action="{{ url_for('routes.send_message') }}" class="flex space-x-2">
+    <input type="hidden" name="recipient_id" value="{{ selected_user.id }}">
+    <input name="content" type="text" placeholder="Type a message..." class="flex-1 bg-gray-800 text-white p-2 rounded focus:outline-none focus:ring" required>
+    <input name="password" type="password" placeholder="Password" class="w-48 bg-gray-800 text-white p-2 rounded focus:outline-none" required>
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded font-semibold">Send</button>
         </form>
         {% else %}
         <p class="text-gray-400 text-center m-auto">Select a user to start chatting.</p>
