@@ -10,7 +10,7 @@ load_dotenv()
 
 # Setup database
 db = SQLAlchemy()
-DB_NAME = "database_v2.db"  # ✅ updated for DB reset
+DB_NAME = "database_v3.db"
 
 def create_app():
     app = Flask(__name__)
