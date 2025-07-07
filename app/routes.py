@@ -5,8 +5,8 @@ from . import db
 from app.enigma_machine import enigma, initialize_machine_from_password
 import os
 from werkzeug.utils import secure_filename
+
 routes = Blueprint("routes", __name__)
-from flask import Blueprint  # this was missing or deleted
 
 
 @routes.route('/')
@@ -104,3 +104,20 @@ def decline_friend(req_id):
         req.status = 'declined'
         db.session.commit()
     return redirect(url_for('routes.friend_requests'))
+
+@routes.route('/send_message', methods=['POST'])
+@login_required
+def send_message():
+    recipient_id = int(request.form.get('recipient_id'))
+    content = request.form.get('content')
+    password = request.form.get('password')
+
+    if content and password:
+        rotor_a, rotor_b, rotor_c, reflector = initialize_machine_from_password(password)
+        encrypted = enigma(content, rotor_a, rotor_b, rotor_c, reflector)
+
+        new_message = Message(sender_id=current_user.id, recipient_id=recipient_id, content=encrypted)
+        db.session.add(new_message)
+        db.session.commit()
+
+    return redirect(url_for('routes.chat', user=recipient_id))
