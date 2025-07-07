@@ -4,7 +4,6 @@ from flask_login import LoginManager
 from os import path
 from dotenv import load_dotenv
 import os
-from app import create_app
 
 app = create_app()
 
