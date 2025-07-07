@@ -5,14 +5,12 @@ from os import path
 from dotenv import load_dotenv
 import os
 
-app = create_app()
-
 # Load environment variables
 load_dotenv()
 
 # Setup database
 db = SQLAlchemy()
-DB_NAME = "database_v2.db"
+DB_NAME = "database_v2.db"  # ✅ updated for DB reset
 
 def create_app():
     app = Flask(__name__)
@@ -22,11 +20,11 @@ def create_app():
 
     db.init_app(app)
 
-    from .routes import routes
     from .auth import auth
-
-    app.register_blueprint(routes)
     app.register_blueprint(auth)
+
+    from .routes import routes
+    app.register_blueprint(routes)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
