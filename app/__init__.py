@@ -4,13 +4,16 @@ from flask_login import LoginManager
 from os import path
 from dotenv import load_dotenv
 import os
+from app import create_app
+
+app = create_app()
 
 # Load environment variables
 load_dotenv()
 
 # Setup database
 db = SQLAlchemy()
-DB_NAME = "database.db"
+DB_NAME = "database_v2.db"
 
 def create_app():
     app = Flask(__name__)
