@@ -1,10 +1,13 @@
-from flask import render_template, request, redirect, url_for, session, current_app
+from flask import render_template, request, redirect, url_for, session, current_app, Blueprint
 from flask_login import login_required, current_user
 from .models import User, Message, FriendRequest
 from . import db
 from app.enigma_machine import enigma, initialize_machine_from_password
 import os
 from werkzeug.utils import secure_filename
+routes = Blueprint("routes", __name__)
+from flask import Blueprint  # this was missing or deleted
+
 
 @routes.route('/')
 @login_required
@@ -77,3 +80,27 @@ def edit_profile():
             current_user.profile_picture = filename
             db.session.commit()
     return render_template("profile.html")
+
+@routes.route('/friend_requests')
+@login_required
+def friend_requests():
+    pending = FriendRequest.query.filter_by(to_user_id=current_user.id, status='pending').all()
+    return render_template("friend_requests.html", requests=pending)
+
+@routes.route('/accept_friend/<int:req_id>')
+@login_required
+def accept_friend(req_id):
+    req = FriendRequest.query.get(req_id)
+    if req and req.to_user_id == current_user.id:
+        req.status = 'accepted'
+        db.session.commit()
+    return redirect(url_for('routes.friend_requests'))
+
+@routes.route('/decline_friend/<int:req_id>')
+@login_required
+def decline_friend(req_id):
+    req = FriendRequest.query.get(req_id)
+    if req and req.to_user_id == current_user.id:
+        req.status = 'declined'
+        db.session.commit()
+    return redirect(url_for('routes.friend_requests'))
